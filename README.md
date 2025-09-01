@@ -84,8 +84,8 @@ Remove apenas usuários de teste, mantendo estrutura.
 
 ## 🌐 Acesso
 
-- **Local:** http://localhost:3001
-- **Rede Local:** http://192.168.1.64:3001 (IP da sua máquina na rede)
+- **Local:** http://localhost:PORTA
+- **Rede Local:** (IP da sua máquina na rede):PORTA
 
 > **💡 Dica:** Configuramos para acesso local! Veja [local-access.md](local-access.md) para detalhes.
 
