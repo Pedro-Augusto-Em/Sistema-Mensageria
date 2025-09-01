@@ -210,11 +210,11 @@ O sistema gera logs detalhados:
 
 ## 🎯 Próximos Passos
 
-- [ ] Notificações push
-- [ ] Criptografia end-to-end
-- [ ] Backup automático
+- [ ] Melhorar interface
+- [ ] Melhorar a notifição
+- [ ] Melhorar o sistema dos emojis
 - [ ] Interface mobile
-- [ ] Integração com LDAP
+- [ ] Melhorar os grupos explorando a tecnologia de Broadcast.
 
 ---
 
