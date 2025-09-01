@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+    <title>Sistema de Mensageria</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Tela de Login/Registro -->
+        <div id="auth-screen" class="auth-container">
+            <div class="auth-box">
+                <div class="logo">
+                    <i class="fas fa-comments"></i>
+                    <h1>Sistema de Mensageria</h1>
+                </div>
+                
+                <!-- Formulário de Login -->
+                <form id="login-form" class="auth-form active">
+                    <h2>Entrar</h2>
+                    <div class="form-group">
+                        <input type="text" id="login-username" placeholder="Usuário" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="login-password" placeholder="Senha" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Entrar</button>
+                    <p class="auth-switch">
+                        Não tem conta? <a href="#" id="show-register">Registrar</a>
+                    </p>
+                </form>
+
+                <!-- Formulário de Registro -->
+                <form id="register-form" class="auth-form">
+                    <h2>Criar Conta</h2>
+                    <div class="form-group">
+                        <input type="text" id="register-username" placeholder="Usuário" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="register-nickname" placeholder="Nickname" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="register-password" placeholder="Senha" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Registrar</button>
+                    <p class="auth-switch">
+                        Já tem conta? <a href="#" id="show-login">Entrar</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela Principal do Chat -->
+        <div id="chat-screen" class="chat-container hidden">
+            <!-- Header -->
+            <header class="chat-header">
+                <div class="user-info">
+                    <div class="user-profile">
+                        <div class="user-avatar-header" id="user-avatar-header">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span id="current-user">Usuário</span>
+                    </div>
+                    <div class="header-actions">
+                        <div class="notifications-container">
+                            <button id="notifications-btn" class="btn-notifications" title="Notificações">
+                                <i class="fas fa-bell"></i>
+                                <span id="notifications-count" class="notifications-badge hidden">0</span>
+                            </button>
+                            <div id="notifications-dropdown" class="notifications-dropdown hidden">
+                                <div class="notifications-header">
+                                    <h4>Notificações</h4>
+                                    <button id="mark-all-read-btn" class="btn-link">Marcar todas como lidas</button>
+                                </div>
+                                <div id="notifications-list" class="notifications-list">
+                                    <!-- Notificações serão carregadas aqui -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Botão de alterar foto removido - avatar agora é clicável -->
+                        <button id="logout-btn" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Botão para abrir/fechar sidebar em mobile -->
+            <button id="sidebar-toggle" class="sidebar-toggle hidden">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- Sidebar -->
+            <div class="chat-sidebar">
+                <div class="sidebar-header">
+                    <h3>Conversas</h3>
+                    <div class="sidebar-buttons">
+                        <button id="new-chat-btn" class="btn-new-chat">
+                            <i class="fas fa-plus"></i> Nova Conversa
+                        </button>
+                        <button id="new-group-btn" class="btn-new-group">
+                            <i class="fas fa-users"></i> Novo Grupo
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" id="search-conversations" placeholder="Buscar conversas...">
+                </div>
+                
+                <div class="conversations-list" id="conversations-list">
+                    <!-- Lista de conversas será carregada aqui -->
+                </div>
+            </div>
+
+            <!-- Área de Chat -->
+            <div class="chat-main">
+                <div id="chat-placeholder" class="chat-placeholder">
+                    <i class="fas fa-comments"></i>
+                    <h3>Selecione uma conversa para começar</h3>
+                    <p>Escolha um usuário ou grupo da lista para iniciar o bate-papo</p>
+                </div>
+
+                <div id="chat-area" class="chat-area hidden">
+                                    <div class="chat-header-room">
+                    <div class="room-avatar" id="room-avatar">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="room-info">
+                        <h3 id="chat-room-title">Conversa</h3>
+                        <p id="room-description" class="room-description"></p>
+                    </div>
+                    <div class="chat-actions">
+                        <button id="edit-group-btn" class="btn-action hidden" title="Editar grupo">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button id="add-member-btn" class="btn-action hidden" title="Adicionar membro">
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                        <button id="delete-group-btn" class="btn-action hidden btn-danger" title="Excluir conversa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                    
+                    <div class="messages-container" id="messages-container">
+                        <!-- Mensagens serão carregadas aqui -->
+                    </div>
+                    
+                    <!-- Modal para editar mensagem -->
+                    <div id="edit-message-modal" class="modal hidden">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Editar Mensagem</h3>
+                                <button id="close-edit-message-modal" class="btn-close">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Mensagem:</label>
+                                    <textarea id="edit-message-content" placeholder="Digite a nova mensagem..." required></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="save-message-btn" class="btn-primary">Salvar</button>
+                                <button id="cancel-edit-message-btn" class="btn-secondary">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Modal para confirmar exclusão de grupo -->
+                    <div id="delete-group-modal" class="modal hidden">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Excluir Grupo</h3>
+                                <button id="close-delete-group-modal" class="btn-close">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="warning-message">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <p><strong>Atenção!</strong> Esta ação não pode ser desfeita.</p>
+                                    <p>O grupo "<span id="delete-group-name"></span>" será excluído permanentemente, junto com todas as suas mensagens.</p>
+                                    <p>Todos os membros serão removidos do grupo.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Digite o nome do grupo para confirmar:</label>
+                                    <input type="text" id="confirm-group-name" placeholder="Digite o nome exato do grupo" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="confirm-delete-group-btn" class="btn-danger" disabled>Excluir Grupo</button>
+                                <button id="cancel-delete-group-btn" class="btn-secondary">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal de Emojis Customizados -->
+                    <div id="emoji-modal" class="modal hidden">
+                        <div class="modal-content emoji-modal-content">
+                            <div class="modal-header">
+                                <h3>Emojis Customizados</h3>
+                                <button id="close-emoji-modal" class="close-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="emoji-tabs">
+                                    <button id="emoji-picker-tab" class="emoji-tab active">Selecionar</button>
+                                    <button id="emoji-upload-tab" class="emoji-tab">Upload</button>
+                                </div>
+                                
+                                <!-- Aba de seleção de emojis -->
+                                <div id="emoji-picker-content" class="emoji-content">
+                                    <div class="emoji-search">
+                                        <input type="text" id="emoji-search" placeholder="Buscar emojis...">
+                                    </div>
+                                    <div id="emoji-grid" class="emoji-grid">
+                                        <!-- Emojis serão carregados aqui -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Aba de upload de emojis -->
+                                <div id="emoji-upload-content" class="emoji-content hidden">
+                                    <div class="upload-form">
+                                        <div class="form-group">
+                                            <label for="emoji-name">Nome do emoji:</label>
+                                            <input type="text" id="emoji-name" placeholder="Ex: haaaa" maxlength="20" pattern="[a-zA-Z0-9_]+">
+                                            <small>Use apenas letras, números e underscore</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="emoji-file">Arquivo de imagem:</label>
+                                            <input type="file" id="emoji-file" accept="image/*">
+                                            <small>Máximo 2MB. Formatos: JPG, PNG, GIF</small>
+                                        </div>
+                                        <div class="emoji-preview" id="emoji-preview" style="display: none;">
+                                            <img id="emoji-preview-img" src="" alt="Preview">
+                                            <span id="emoji-preview-name"></span>
+                                        </div>
+                                        <button id="upload-emoji-btn" class="btn-primary" disabled>Upload Emoji</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="message-input-container">
+                        <div class="message-input-wrapper">
+                            <div class="input-actions">
+                                <button id="emoji-btn" class="btn-emoji" title="Emojis">
+                                    <i class="fas fa-smile"></i>
+                                </button>
+                                <button id="attach-file-btn" class="btn-attach" title="Anexar arquivo">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <button id="reply-btn" class="btn-reply" title="Responder mensagem" style="display: none;">
+                                    <i class="fas fa-reply"></i>
+                                </button>
+                                <button id="attach-image-btn" class="btn-attach" title="Anexar imagem">
+                                    <i class="fas fa-image"></i>
+                                </button>
+                            </div>
+                            <input type="text" id="message-input" placeholder="Digite sua mensagem..." maxlength="500">
+                            <button id="send-message-btn" class="btn-send">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <input type="file" id="file-input" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.rtf,.xls,.xlsx,.ppt,.pptx" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Nova Conversa -->
+        <div id="new-chat-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Nova Conversa</h3>
+                    <button id="close-modal" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Selecione o usuário:</label>
+                        <select id="new-chat-user" required>
+                            <option value="">Escolha um usuário...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nome da conversa (opcional):</label>
+                        <input type="text" id="new-chat-name" placeholder="Nome da conversa">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="create-chat-btn" class="btn-primary">Criar Conversa</button>
+                    <button id="cancel-chat-btn" class="btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Novo Grupo -->
+        <div id="new-group-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Novo Grupo</h3>
+                    <button id="close-group-modal" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nome do grupo:</label>
+                        <input type="text" id="new-group-name" placeholder="Nome do grupo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição (opcional):</label>
+                        <textarea id="new-group-description" placeholder="Descrição do grupo"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pesquisar usuários:</label>
+                        <div class="search-users-container">
+                            <input type="text" id="search-users-input" placeholder="Digite para pesquisar usuários..." class="search-input">
+                            <div id="search-results" class="search-results hidden"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Membros selecionados:</label>
+                        <div class="selected-members" id="selected-members">
+                            <!-- Tags dos usuários selecionados aparecerão aqui -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="create-group-btn" class="btn-primary">Criar Grupo</button>
+                    <button id="cancel-group-btn" class="btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Adicionar Membro -->
+        <div id="add-member-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Adicionar Membro</h3>
+                    <button id="close-add-member-modal" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Selecione o usuário:</label>
+                        <select id="add-member-user" required>
+                            <option value="">Escolha um usuário...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-add-member-btn" class="btn-primary">Adicionar</button>
+                    <button id="cancel-add-member-btn" class="btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Alterar Foto de Perfil -->
+        <div id="change-photo-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Alterar Foto de Perfil</h3>
+                    <button id="close-change-photo-modal" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="current-photo">
+                        <div class="current-photo-avatar" id="current-photo-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <p>Foto atual</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Selecione uma nova imagem:</label>
+                        <input type="file" id="profile-photo-input" accept="image/*" required>
+                        <small>Aceita: JPG, PNG, GIF, WebP (máx. 10MB)</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="upload-photo-btn" class="btn-primary">Enviar Foto</button>
+                    <button id="cancel-photo-btn" class="btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Editar Grupo -->
+        <div id="edit-group-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Editar Grupo</h3>
+                    <button id="close-edit-group-modal" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nome do grupo:</label>
+                        <input type="text" id="edit-group-name" placeholder="Nome do grupo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição:</label>
+                        <textarea id="edit-group-description" placeholder="Descrição do grupo"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto do grupo (opcional):</label>
+                        <input type="file" id="group-photo-input" accept="image/*">
+                        <small>Aceita: JPG, PNG, GIF, WebP (máx. 10MB)</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save-group-btn" class="btn-primary">Salvar Alterações</button>
+                    <button id="cancel-edit-group-btn" class="btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/app.js"></script>
+</body>
+</html>
